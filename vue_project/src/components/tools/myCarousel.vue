@@ -1,76 +1,45 @@
 <template>
-
     <div
         class="carousel_box"
         @mouseenter="isShowBtn = !isShowBtn"
         @mouseleave="isShowBtn = !isShowBtn"
     >
-        <transition name="fade">
+        <transition name="slide-fade-left">
             <i
                 class="el-icon-arrow-left carousel_btn carousel_btn_left"
                 v-show="isShowBtn"
                 @click="movePage('left')"
             ></i>
         </transition>
-        <transition name="fade">
+        <transition name="slide-fade-right">
             <i
                 class="el-icon-arrow-right carousel_btn carousel_btn_right"
                 v-show="isShowBtn"
                 @click="movePage('right')"
             ></i>
         </transition>
-        <ul class="carousel_content" :style="carousel_style">
-            <li v-for="(item, index) in carousel" :key="index">
-                <img :src="item.imgSrc" alt />
-            </li>
-        </ul>
+        <div
+            class="carousel_content"
+            :style="{ left: change_style.left, transition: change_style.transition }"
+        >
+            <slot></slot>
+        </div>
     </div>
 </template>
 
 <script>
 export default {
-    created: function () {
-        var temp = this.carousel;
-        for (const x in temp) {
-            if (x == 0) {
-                var first = temp[x];
-                first.id = -1;
-            } else if (x == temp.length - 1) {
-                var last = temp[x];
-                last.id = 0;
-            }
-        }
-        temp.unshift(last);
-        temp.push(first);
-    },
+    props: [
+        "number"
+    ],
     data() {
         return {
             now_carousel: 1,
-            carousel_style: {
-                position: "relative",
-                marginLeft: "-520px",
-                transition: "left 0.5s",
-                left: "0px",
-            },
             isChangePage: false,
-            carousel: [
-                {
-                    id: 1,
-                    imgSrc: require("../../assets/home_carousel/carousel_1.jpg"),
-                },
-                {
-                    id: 2,
-                    imgSrc: require("../../assets/home_carousel/carousel_2.jpg"),
-                },
-                {
-                    id: 3,
-                    imgSrc: require("../../assets/home_carousel/carousel_3.jpg"),
-                },
-                {
-                    id: 4,
-                    imgSrc: require("../../assets/home_carousel/carousel_4.jpg"),
-                },
-            ],
+            change_style: {
+                left: "0px",
+                transition: "left 0.5s",
+            },
             isShowBtn: false,
         };
     },
@@ -78,29 +47,27 @@ export default {
         movePage: function (active) {
             if (!this.isChangePage) {
                 this.isChangePage = true;
-                var index_max = this.carousel.length - 2;
+                var index_max = this.number - 2;
                 if (active == "left") {
                     this.now_carousel -= 1;
                 } else {
                     this.now_carousel += 1;
                 }
 
-                this.carousel_style.left =
-                    (this.now_carousel - 1) * -520 + "px";
+                this.change_style.left = (this.now_carousel - 1) * -520 + "px";
 
                 var t;
                 clearTimeout(t);
                 var that = this;
                 t = setTimeout(function () {
                     if (that.now_carousel == 0) {
-                        that.carousel_style.transition = "left 0s";
-                        that.carousel_style.left =
-                            (index_max - 1) * -520 + "px";
+                        that.change_style.transition = "left 0s";
+                        that.change_style.left = (index_max - 1) * -520 + "px";
                         that.isChangePage = false;
                         that.now_carousel = index_max;
                     } else if (that.now_carousel == index_max + 1) {
-                        that.carousel_style.transition = "left 0s";
-                        that.carousel_style.left = "0px";
+                        that.change_style.transition = "left 0s";
+                        that.change_style.left = "0px";
                         that.isChangePage = false;
                         that.now_carousel = 1;
                     } else {
@@ -108,7 +75,7 @@ export default {
                     }
                 }, 500);
 
-                this.carousel_style.transition = "left 0.5s";
+                this.change_style.transition = "left 0.5s";
             }
         },
     },
@@ -126,7 +93,7 @@ export default {
     white-space: nowrap;
 }
 
-.carousel_content li {
+.carousel_content > div {
     width: 520px;
     height: 280px;
     display: inline-block;
@@ -157,5 +124,30 @@ export default {
     right: 0px;
     border-radius: 35px;
     margin-right: 20px;
+}
+
+.slide-fade-right-enter-active,
+.slide-fade-right-leave-active,
+.slide-fade-left-enter-active,
+.slide-fade-left-leave-active {
+    transition: all 0.5s ease;
+}
+.slide-fade-right-enter,
+.slide-fade-right-leave-to {
+    transform: translateX(60px);
+    opacity: 0;
+}
+
+.slide-fade-left-enter,
+.slide-fade-left-leave-to {
+    transform: translateX(-60px);
+    opacity: 0;
+}
+
+.carousel_content {
+    position: relative;
+    margin-left: -520px;
+    transition: left 0.5s;
+    left: 0px;
 }
 </style>

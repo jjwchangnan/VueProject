@@ -58,9 +58,15 @@
                 </div>
                 <div class="mid_nav_left">
                     <div class="mid_nav_left_top">
-                        <my-carousel></my-carousel>
+                        <my-carousel :number="carousel.length">
+                            <div v-for="(item, index) in carousel" :key="index">
+                                <img :src="item.imgSrc" alt />
+                            </div>
+                        </my-carousel>
                     </div>
-                    <div class="mid_nav_left_bot"></div>
+                    <div class="mid_nav_left_bot">
+                        
+                    </div>
                 </div>
                 <div class="mid_nav_right">
                     <div class="mid_nav_right_top"></div>
@@ -74,9 +80,17 @@
 <script>
 import MyCarousel from "./tools/myCarousel";
 
+var SonCarousel = {
+  template: '<div class="carousel_content" :style="carousel_style"></div>'
+}
+
 export default {
     components: {
-        MyCarousel
+        MyCarousel,
+        //SonCarousel
+    },
+    created: function () {
+        this.add_carousel(this.carousel)
     },
     data() {
         return {
@@ -386,10 +400,41 @@ export default {
                     },
                 ],
             ],
+            carousel: [
+                {
+                    id: 1,
+                    imgSrc: require("../assets/home_carousel/carousel_1.jpg"),
+                },
+                {
+                    id: 2,
+                    imgSrc: require("../assets/home_carousel/carousel_2.jpg"),
+                },
+                {
+                    id: 3,
+                    imgSrc: require("../assets/home_carousel/carousel_3.jpg"),
+                },
+                {
+                    id: 4,
+                    imgSrc: require("../assets/home_carousel/carousel_4.jpg"),
+                },
+            ]
         };
     },
     methods: {
-        
+        add_carousel: function (data) {
+            var temp = data
+            for (const x in temp) {
+                if (x == 0) {
+                    var first = temp[x];
+                    first.id = -1;
+                } else if (x == temp.length - 1) {
+                    var last = temp[x];
+                    last.id = 0;
+                }
+            }
+            temp.unshift(last);
+            temp.push(first);
+        },
     },
 };
 </script>
@@ -665,5 +710,11 @@ export default {
     float: left;
     width: 100%;
     height: 230px;
+}
+
+.tmall_box{
+    width: 100%;
+    height: 100%;
+    background: brown;
 }
 </style>
