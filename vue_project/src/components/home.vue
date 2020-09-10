@@ -58,14 +58,21 @@
                 </div>
                 <div class="mid_nav_left">
                     <div class="mid_nav_left_top">
-                        <my-carousel :number="carousel.length">
+                        <my-carousel :number="carousel.length" :isShowNav="true" box_heigth="280px">
                             <div v-for="(item, index) in carousel" :key="index">
                                 <img :src="item.imgSrc" alt />
                             </div>
                         </my-carousel>
                     </div>
                     <div class="mid_nav_left_bot">
-                        
+                        <div class="tmall_head">
+                            <img src="../assets/tmall_carousel/tmall_head.png" alt="" height="100%">
+                        </div>
+                        <my-carousel :number="carousel_tmall.length" :isShowNav="false" box_heigth="197px">
+                            <div v-for="(item, index) in carousel_tmall" :key="index">
+                                <img width="260px" v-for="(list, index) in item" :key="index" :src="list.imgSrc" alt />
+                            </div>
+                        </my-carousel>
                     </div>
                 </div>
                 <div class="mid_nav_right">
@@ -87,10 +94,10 @@ var SonCarousel = {
 export default {
     components: {
         MyCarousel,
-        //SonCarousel
     },
     created: function () {
         this.add_carousel(this.carousel)
+        this.add_carousel(this.carousel_tmall)
     },
     data() {
         return {
@@ -417,6 +424,58 @@ export default {
                     id: 4,
                     imgSrc: require("../assets/home_carousel/carousel_4.jpg"),
                 },
+            ],
+            carousel_tmall: [
+                [
+                    {
+                        id: 1,
+                        imgSrc: require("../assets/tmall_carousel/Tmall_1.jpg"),
+                    },
+                    {
+                        id: 2,
+                        imgSrc: require("../assets/tmall_carousel/Tmall_2.jpg"),
+                    },
+                ],
+                [
+                    {
+                        id: 1,
+                        imgSrc: require("../assets/tmall_carousel/Tmall_3.jpg"),
+                    },
+                    {
+                        id: 2,
+                        imgSrc: require("../assets/tmall_carousel/Tmall_4.jpg"),
+                    },
+                ],
+                [
+                    {
+                        id: 1,
+                        imgSrc: require("../assets/tmall_carousel/Tmall_5.jpg"),
+                    },
+                    {
+                        id: 2,
+                        imgSrc: require("../assets/tmall_carousel/Tmall_6.jpg"),
+                    },
+                ],
+                [
+                    {
+                        id: 1,
+                        imgSrc: require("../assets/tmall_carousel/Tmall_7.jpg"),
+                    },
+                    {
+                        id: 2,
+                        imgSrc: require("../assets/tmall_carousel/Tmall_8.jpg"),
+                    },
+                ],
+                [
+                    {
+                        id: 1,
+                        imgSrc: require("../assets/tmall_carousel/Tmall_9.jpg"),
+                    },
+                    {
+                        id: 2,
+                        imgSrc: require("../assets/tmall_carousel/Tmall_10.jpg"),
+                    },
+                ],
             ]
         };
     },
@@ -712,9 +771,17 @@ export default {
     height: 230px;
 }
 
-.tmall_box{
+.tmall_head{
     width: 100%;
-    height: 100%;
-    background: brown;
+    height: 28px;
+    padding: 5px 0 0 0;
+    box-sizing: border-box;
+    border-bottom: 3px solid #ff1648;
+    margin-bottom: 5px;
+}
+
+.tmall_head img {
+    position: relative;
+    top: 2px;
 }
 </style>
