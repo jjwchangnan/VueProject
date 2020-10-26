@@ -1,0 +1,113 @@
+{
+	"sk1":{
+		"storename": "宜宾烤五花肉",
+		"goodslist": [
+			{
+				"goodsid": "mj",
+				"goodsname": "面筋",
+				"price": 4.5,
+				"salescount": 5,
+				"number": 0
+			},
+			{
+				"goodsid": "jp",
+				"goodsname": "鸡皮",
+				"price": 8.6,
+				"salescount": 6,
+				"number": 0
+			},
+			{
+				"goodsid": "jc",
+				"goodsname": "韭菜",
+				"price": 3.6,
+				"salescount": 7,
+				"number": 0
+			},
+			{
+				"goodsid": "hc",
+				"goodsname": "花菜",
+				"price": 10.5,
+				"salescount": 8,
+				"number": 0
+			}
+		],
+		"notice": "欢迎光临，很高兴为您服务~",
+		"salescount": 450,
+		"star": 4,
+		"imgsrc": ""
+	},
+	"lc1":{
+		"storename": "茶百道",
+		"goodslist": [
+			{
+				"goodsid": "pt",
+				"goodsname": "葡萄芋圆冻冻",
+				"price": 4.5,
+				"salescount": 5,
+				"number": 0
+			},
+			{
+				"goodsid": "sxc",
+				"goodsname": "烧仙草",
+				"price": 8.6,
+				"salescount": 6,
+				"number": 0
+			},
+			{
+				"goodsid": "yzgl",
+				"goodsname": "杨枝甘露",
+				"price": 3.6,
+				"salescount": 7,
+				"number": 0
+			},
+			{
+				"goodsid": "dsd",
+				"goodsname": "大圣代",
+				"price": 10.5,
+				"salescount": 8,
+				"number": 0
+			}
+		],
+		"notice": "欢迎光临，很高兴为您服务~",
+		"salescount": 255,
+		"star": 4,
+		"imgsrc": "@/assets/img/discount1.png"
+	},
+	"xcj1":{
+		"storename": "乡村基",
+		"goodslist": [
+			{
+				"goodsid": "lbgcr",
+				"goodsname": "萝卜干炒肉",
+				"price": 4.5,
+				"salescount": 6,
+				"number": 0
+			},
+			{
+				"goodsid": "lrf",
+				"goodsname": "卤肉饭",
+				"price": 8.6,
+				"salescount": 7,
+				"number": 0
+			},
+			{
+				"goodsid": "jpf",
+				"goodsname": "鸡排饭",
+				"price": 3.6,
+				"salescount": 5,
+				"number": 0
+			},
+			{
+				"goodsid": "pgcf",
+				"goodsname": "培根炒饭",
+				"price": 10.5,
+				"salescount": 9,
+				"number": 0
+			}
+		],
+		"notice": "欢迎光临，很高兴为您服务~",
+		"salescount": 1655,
+		"star": 5,
+		"imgsrc": "@/assets/img/discount1.png"
+	}
+}

@@ -1,0 +1,40 @@
+{
+	"changnan":{
+		"paying": [
+			{
+				"storeid": "lc1",
+				"storename": "茶百道（万达广场店）",
+				"goodsid": "pt",
+				"goodsname": "葡萄芋圆冻冻",
+				"number": 1,
+				"price": 21,
+				"sumprice": 21,
+				"status": 0
+			}
+		],
+		"transport":[
+			{
+				"storeid": "xcj1",
+				"storename": "乡村基（万达广场店）",
+				"goodsid": "lbgcr",
+				"goodsname": "萝卜干炒肉",
+				"number": 5,
+				"price": 16.5,
+				"sumprice": 82.5,
+				"status": 1
+			}
+		],
+		"done": [
+			{
+				"storeid": "sk1",
+				"storename": "宜宾烤五花肉",
+				"goodsid": "mj",
+				"goodsname": "面筋",
+				"number": 10,
+				"price": 10.5,
+				"sumprice": 105,
+				"status": 2
+			}
+		]
+	}
+}
