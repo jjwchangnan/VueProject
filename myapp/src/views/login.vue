@@ -57,7 +57,7 @@ export default {
     methods: {
         onSubmit() {
             this.$axios
-                .get("/public/static/user.json")
+                .get("/static/user.json")
                 .then((res) => {
                     this.doLogin(res.data);
                 })

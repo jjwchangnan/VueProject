@@ -16,7 +16,7 @@
                 />
             </div>
             <div class="st_list_son_text">
-                <p>{{ item.name }}</p>
+                <p>{{ item.goodsname }}</p>
                 <p>月售{{ item.salescount }}</p>
                 <p><span>￥</span>{{ item.price }}</p>
                 <div>
@@ -26,7 +26,8 @@
                         color="#d6d2c4"
                         @click="delCart(item.goodsid)"
                         v-show="
-                            isNaN(goods[item.goodsid]) && goods[item.goodsid] > 0
+                            isNaN(goods[item.goodsid]) &&
+                            goods[item.goodsid] > 0
                                 ? false
                                 : true
                         "
@@ -53,17 +54,21 @@ export default {
     name: "GoodsList",
     props: ["goodslist", "storeid"],
     mounted: function () {
-		let cart_obj = this.$store.state.cart
-		if(cart_obj == ''){
-			cart_obj = {}
-			cart_obj[this.storeid] = {}
-			for (const key in this.goodslist) {
-				let id = this.goodslist[key].goodsid
-				cart_obj[this.storeid][id] = 0
-			}
-		}
-		this.$store.commit("setCart", cart_obj);
-        //console.log(this.$store.state.cart[this.storeid]);
+        let cart_obj = this.$store.state.cart;
+        if (cart_obj == "") {
+            cart_obj = {};
+        }
+        if (!cart_obj.hasOwnProperty(this.storeid)) {
+            cart_obj[this.storeid] = {};
+            for (const key in this.goodslist) {
+                let id = this.goodslist[key].goodsid;
+                cart_obj[this.storeid][id] = {};
+                cart_obj[this.storeid][id].num = 0;
+                cart_obj[this.storeid][id].price = this.goodslist[key].price;
+            }
+        }
+        this.$store.commit("setCart", cart_obj);
+        this.upData();
     },
     methods: function () {},
     data() {
@@ -71,7 +76,7 @@ export default {
             goods: {},
         };
     },
-    computed: {
+    /* computed: {
         ...mapState(["cart"]),
     },
     watch: {
@@ -79,30 +84,35 @@ export default {
             handler(val) {
 				let data = val[this.storeid];
 				for (const i in data) {
-					this.$set(this.goods, i, data[i]);
+					this.$set(this.goods, i, data[i].num);
 				}
             },
             deep: true,
             immediate: true,
         },
-    },
+    }, */
     methods: {
         addCart(id) {
             let cart_data = this.$store.state.cart;
-            if (!cart_data.hasOwnProperty(this.storeid)) {
-                cart_data[this.storeid] = {};
-                cart_data[this.storeid][id] = 1;
-            } else {
-                if (!cart_data[this.storeid].hasOwnProperty(id)) {
-                    cart_data[this.storeid][id] = 1;
-                } else {
-                    ++cart_data[this.storeid][id];
-                }
-            }
+            ++cart_data[this.storeid][id].num;
             this.$store.commit("setCart", cart_data);
+            this.upData();
         },
-        delCart(index) {},
-        updateData() {},
+        delCart(id) {
+			let cart_data = this.$store.state.cart;
+            if (cart_data[this.storeid][id].num > 0) {
+                --cart_data[this.storeid][id].num;
+			}
+            this.$store.commit("setCart", cart_data);
+            this.upData();
+        },
+        upData() {
+            let data = this.$store.state.cart[this.storeid];
+            for (const i in data) {
+                this.$set(this.goods, i, data[i].num);
+			}
+			this.$emit('upDataCart')
+        },
     },
 };
 </script>

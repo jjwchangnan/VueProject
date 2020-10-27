@@ -37,6 +37,7 @@
             <goods-list
                 :goodslist="shoplist"
                 :storeid="storeinfo.storeid"
+				@upDataCart="upDataPrice"
             ></goods-list>
         </div>
 
@@ -50,7 +51,7 @@
 
             <div class="st_shoping_cart_son st_shoping_cart_text">
                 <p>
-                    <span>￥</span>{{ priceSum }} <s><span>￥</span>48.65</s>
+                    <span>￥</span>{{ price_sum }} <s><span>￥</span>48.65</s>
                 </p>
                 <p>&nbsp;免配送费</p>
             </div>
@@ -73,6 +74,7 @@
                 <goods-list
                     :goodslist="shoplist"
                     :storeid="storeinfo.storeid"
+					@upDataCart="upDataPrice"
                 ></goods-list>
             </van-popup>
         </div>
@@ -86,6 +88,7 @@ export default {
     name: "storelist",
     created: function () {
 		this.goodsInfo();
+		this.upDataPrice();
     },
     data() {
         return {
@@ -97,14 +100,15 @@ export default {
                 salescount: "",
                 storeid: "",
             },
-            shoplist: [],
+			shoplist: [],
+			price_sum: 0
         };
     },
     components: {
         GoodsList,
 	},
 	computed: {
-
+		
 	},
     methods: {
         showPopup() {
@@ -121,18 +125,27 @@ export default {
 			for (const i in store_info.goodslist) {
 				this.$set(this.shoplist, i, store_info.goodslist[i])
 			}
-        },
+		},
+		upDataPrice() {
+			let sum = 0;
+			let cart = this.$store.state.cart[this.storeinfo.storeid]
+            for (const x in cart) {
+				sum += cart[x].num * cart[x].price
+			}
+			this.price_sum = sum.toFixed(2);
+			//console.log(this.price_sum)
+		}
     },
-    computed: {
+    /* computed: {
         priceSum: function () {
-            let price_sum = 0;
-            for (const key in this.shoplist) {
-                price_sum +=
-                    this.shoplist[key].number * this.shoplist[key].price;
+			let price_sum = 0;
+			let cart = this.$store.state.cart[this.storeinfo.storeid]
+            for (const x in cart) {
+				price_sum += cart[x].num * cart[x].price
             }
             return price_sum.toFixed(2);
         },
-    },
+    }, */
 };
 </script>
 

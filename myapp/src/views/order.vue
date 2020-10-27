@@ -55,7 +55,7 @@
 export default {
     name: "order",
     mounted: function () {
-        this.getJson("/public/static/order.json", this.getOrder);
+        this.getJson("static/order.json", this.getOrder);
     },
     data() {
         return {

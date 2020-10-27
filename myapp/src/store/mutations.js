@@ -1,5 +1,6 @@
 export default {
 	setCart(state, obj) {
+		//console.log(obj)
 		state.cart = obj;
 	},
 	setUser(state, obj) {
