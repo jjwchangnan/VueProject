@@ -6,11 +6,10 @@ import router from './router'
 import Vant from 'vant'
 import MyCarousel from 'my_carousel_jjw'
 import store from './store/index.js'
-import axios from 'axios'
+import axios from './axios/axios'
 
 //css
 import 'vant/lib/index.css';
-import '@/assets/css/comm.scss';
 
 //js
 import '@/assets/size.js';

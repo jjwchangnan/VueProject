@@ -20,27 +20,31 @@
                 <p>月售{{ item.salescount }}</p>
                 <p><span>￥</span>{{ item.price }}</p>
                 <div>
-                    <van-icon
-                        name="close"
-                        size="20"
-                        color="#d6d2c4"
-                        @click="delCart(item.goodsid)"
-                        v-show="
-                            isNaN(goods[item.goodsid]) &&
-                            goods[item.goodsid] > 0
-                                ? false
-                                : true
-                        "
-                    />
+                    <div class="minus-btn">
+						<van-icon
+							name="minus"
+							size="8"
+							color="#fff"
+							@click="delCart(item.goodsid)"
+							v-show="
+								isNaN(goods[storeid][item.goodsid]) &&
+								goods[storeid][item.goodsid] > 0
+									? false
+									: true
+							"
+						/>
+					</div>
                     <span>{{
-                        isNaN(goods[item.goodsid]) ? 0 : goods[item.goodsid]
+                        isNaN(goods[storeid][item.goodsid]) ? 0 : goods[storeid][item.goodsid]
                     }}</span>
-                    <van-icon
-                        name="add"
-                        size="20"
-                        color="#ff9642"
-                        @click="addCart(item.goodsid)"
-                    />
+					<div class="plus-btn">
+						<van-icon
+							name="plus"
+							size="10"
+							color="#fff"
+							@click="addCart(item.goodsid)"
+						/>
+					</div>
                 </div>
             </div>
         </div>
@@ -53,64 +57,32 @@ import { mapState } from "vuex";
 export default {
     name: "GoodsList",
     props: ["goodslist", "storeid"],
-    mounted: function () {
-        let cart_obj = this.$store.state.cart;
-        if (cart_obj == "") {
-            cart_obj = {};
-        }
-        if (!cart_obj.hasOwnProperty(this.storeid)) {
-            cart_obj[this.storeid] = {};
-            for (const key in this.goodslist) {
-                let id = this.goodslist[key].goodsid;
-                cart_obj[this.storeid][id] = {};
-                cart_obj[this.storeid][id].num = 0;
-                cart_obj[this.storeid][id].price = this.goodslist[key].price;
-            }
-        }
-        this.$store.commit("setCart", cart_obj);
-        this.upData();
-    },
     methods: function () {},
     data() {
         return {
-            goods: {},
+            goods: this.$store.getters.getCart,
         };
-    },
-    /* computed: {
-        ...mapState(["cart"]),
-    },
-    watch: {
-        cart: {
-            handler(val) {
-				let data = val[this.storeid];
-				for (const i in data) {
-					this.$set(this.goods, i, data[i].num);
-				}
-            },
-            deep: true,
-            immediate: true,
-        },
-    }, */
+	},
     methods: {
         addCart(id) {
-            let cart_data = this.$store.state.cart;
-            ++cart_data[this.storeid][id].num;
-            this.$store.commit("setCart", cart_data);
-            this.upData();
+			let obj = {
+				handler: "add",
+				storeid: this.storeid,
+				goodsid: id
+			}
+			this.$store.commit("setCart", obj);
+			this.upData();
         },
         delCart(id) {
-			let cart_data = this.$store.state.cart;
-            if (cart_data[this.storeid][id].num > 0) {
-                --cart_data[this.storeid][id].num;
+			let obj = {
+				handler: "del",
+				storeid: this.storeid,
+				goodsid: id
 			}
-            this.$store.commit("setCart", cart_data);
+			this.$store.commit("setCart", obj);
             this.upData();
         },
         upData() {
-            let data = this.$store.state.cart[this.storeid];
-            for (const i in data) {
-                this.$set(this.goods, i, data[i].num);
-			}
 			this.$emit('upDataCart')
         },
     },
@@ -119,6 +91,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+$redcolor: #F05454;
+$yellowcolor: #FF7F00;
 .st_list_son {
     width: 100%;
     height: 90px;
@@ -160,21 +134,54 @@ export default {
         p:nth-child(3) {
             font-size: 16px;
             line-height: 30px;
-            color: #ff414d;
+            color: $redcolor;
 
             span {
                 font-size: 12px;
             }
         }
 
-        div {
+        > div {
             position: absolute;
             right: 10px;
             bottom: 0px;
 
+			> .minus-btn {
+				display: inline-block;
+				width: 20px;
+				height: 20px;
+				border-radius: 5px;
+				background: #a3a3a3;
+				text-align: center;
+
+				i{
+					display: inline-block;
+					position: relative;
+					width: 100%;
+					height: 100%;
+					line-height: 20px;
+				}
+			}
+
+			> .plus-btn {
+				display: inline-block;
+				width: 20px;
+				height: 20px;
+				border-radius: 5px;
+				background: #ff9642;
+				text-align: center;
+				
+				i{
+					display: inline-block;
+					position: relative;
+					width: 100%;
+					height: 100%;
+					line-height: 20px;
+				}
+			}
+
             span {
-                margin: 0 5px;
-                vertical-align: 5px;
+                margin: 0 10px;
             }
         }
     }

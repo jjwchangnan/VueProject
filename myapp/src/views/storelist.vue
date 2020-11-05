@@ -1,21 +1,34 @@
 <template>
-    <div class="storelist">
+    <div class="storelist" @click="isShowSearch = false">
         <div class="st_header">
-            <i
-                ><van-icon
+            <i>
+                <van-icon
                     name="arrow-left"
                     color="#fff"
                     size="25"
-                    @click="$router.push({ path: '/' })"
-            /></i>
-            <div class="search_box">
-                <van-search
-                    v-model="search_value"
-                    shape="round"
-                    background="transparent"
-                    placeholder="请输入搜索关键词"
-                    style="height: 50px"
+                    @click="$router.go(-1)"
                 />
+            </i>
+            <div class="search_box">
+                <transition name="fade-move">
+                    <i
+                        v-show="!isShowSearch"
+                        @click.stop="isShowSearch = !isShowSearch"
+                    >
+                        <van-icon name="search" color="#fff" size="25" />
+                    </i>
+                </transition>
+                <transition name="show-search">
+                    <div v-show="isShowSearch" @click.stop="">
+                        <van-search
+                            v-model="search_value"
+                            shape="round"
+                            background="transparent"
+                            placeholder="请输入搜索关键词"
+                            style="height: 50px"
+                        />
+                    </div>
+                </transition>
             </div>
         </div>
 
@@ -37,7 +50,7 @@
             <goods-list
                 :goodslist="shoplist"
                 :storeid="storeinfo.storeid"
-				@upDataCart="upDataPrice"
+                @upDataCart="upDataPrice"
             ></goods-list>
         </div>
 
@@ -74,7 +87,7 @@
                 <goods-list
                     :goodslist="shoplist"
                     :storeid="storeinfo.storeid"
-					@upDataCart="upDataPrice"
+                    @upDataCart="upDataPrice"
                 ></goods-list>
             </van-popup>
         </div>
@@ -86,71 +99,50 @@ import GoodsList from "@/components/goodsList";
 
 export default {
     name: "storelist",
-    created: function () {
-		this.goodsInfo();
-		this.upDataPrice();
+    mounted: function () {
+        this.goodsInfo();
     },
     data() {
         return {
             show: false,
+            isShowSearch: false,
             search_value: "",
-            storeinfo: {
-                storename: "",
-                notice: "",
-                salescount: "",
-                storeid: "",
-            },
-			shoplist: [],
-			price_sum: 0
+            storeinfo: "",
+            shoplist: "",
+            price_sum: 0,
         };
     },
     components: {
         GoodsList,
-	},
-	computed: {
-		
-	},
+    },
+    computed: {},
     methods: {
         showPopup() {
             this.show = !this.show;
         },
-        goodsInfo(data) {
-			let storeid = this.$route.query.storeid
-			let store_info = this.$store.state.store[storeid]
-			this.storeinfo.storename = store_info.storename;
-            this.storeinfo.notice = store_info.notice;
-			this.storeinfo.salescount = store_info.salescount;
-			this.storeinfo.storeid = storeid;
-			
-			for (const i in store_info.goodslist) {
-				this.$set(this.shoplist, i, store_info.goodslist[i])
-			}
-		},
-		upDataPrice() {
+        goodsInfo() {
+			let storeid = this.$route.query.storeid;
+			this.storeinfo = this.$store.getters.getStoreInfo(storeid)
+			this.shoplist = this.$store.getters.getGoodsList(storeid)
+        },
+        upDataPrice() {
 			let sum = 0;
-			let cart = this.$store.state.cart[this.storeinfo.storeid]
-            for (const x in cart) {
-				sum += cart[x].num * cart[x].price
+			let goodsInfo = this.$store.getters.getGoodsList(this.$route.query.storeid)
+			let cart = this.$store.getters.getCart;
+			cart = cart[this.$route.query.storeid]
+			for (const id in cart) {
+				sum += goodsInfo[id].price * cart[id]
 			}
 			this.price_sum = sum.toFixed(2);
-			//console.log(this.price_sum)
-		}
-    },
-    /* computed: {
-        priceSum: function () {
-			let price_sum = 0;
-			let cart = this.$store.state.cart[this.storeinfo.storeid]
-            for (const x in cart) {
-				price_sum += cart[x].num * cart[x].price
-            }
-            return price_sum.toFixed(2);
         },
-    }, */
+    },
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+$redcolor: #F05454;
+$yellowcolor: #FF7F00;
 @mixin box_style {
     position: relative;
     width: 94%;
@@ -178,7 +170,7 @@ export default {
         line-height: 50px;
     }
 
-    i:nth-child(1) {
+    > i:nth-child(1) {
         float: left;
     }
 }
@@ -186,8 +178,41 @@ export default {
 .search_box {
     position: absolute;
     right: 0;
-    width: 70%;
+    width: 85%;
+    height: 100%;
+    padding: 0 20px;
     box-sizing: border-box;
+
+    > i {
+        float: right;
+    }
+
+    > div {
+        .van-search {
+            padding-right: 0;
+            padding-left: 0;
+        }
+    }
+
+    .fade-move-enter-active,
+    .fade-move-leave-active {
+        transition: all 0.25s;
+    }
+    .fade-move-enter,
+    .fade-move-leave-to {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+
+    .show-search-enter-active,
+    .show-search-leave-active {
+        transition: all 0.7s;
+    }
+    .show-search-enter,
+    .show-search-leave-to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
 }
 
 .st_info {
@@ -284,7 +309,7 @@ export default {
         right: -1px;
         width: 80px;
         height: 50px;
-        background-color: #ff9642;
+        background-color: $yellowcolor;
         float: right;
         border-top-right-radius: 50px;
         border-bottom-right-radius: 50px;
@@ -300,5 +325,9 @@ export default {
     min-height: 20%;
     padding-bottom: 85px;
     padding-top: 20px;
+}
+
+.van-popup--bottom.van-popup--round {
+	border-radius: 10px 10px 0 0;
 }
 </style>

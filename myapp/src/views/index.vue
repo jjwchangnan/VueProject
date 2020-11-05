@@ -1,6 +1,6 @@
 <template>
     <div>
-        <app-header @left_nav="show_nav_list"></app-header>
+        <app-header @left_nav="isShowLeftNav = !isShowLeftNav"></app-header>
         <router-view />
         <app-footer></app-footer>
         <transition name="slide-left-fade">
@@ -21,7 +21,7 @@
                             <p>{{ user.email }}</p>
                         </div>
                     </div>
-                    <i @click="show_nav_list"
+                    <i @click="isShowLeftNav = !isShowLeftNav"
                         ><van-icon name="cross" size="30"
                     /></i>
                 </div>
@@ -78,15 +78,9 @@ export default {
         appHeader,
         appFooter,
     },
-    mounted: function () {
-        let that = this;
-        setTimeout(function () {
-            that.user = that.$store.state.userinfo;
-        }, 500);
-    },
     data() {
         return {
-			user: "",
+			user: this.$store.getters.getUerInfo(),
 			isLogin: false,
             isShowLeftNav: false,
             left_nav_list: [
@@ -130,9 +124,6 @@ export default {
         },
     },
     methods: {
-        show_nav_list() {
-            this.isShowLeftNav = !this.isShowLeftNav;
-		},
 		toLogin() {
 			if(!this.isLogin)
 				this.$router.push({"path": "/login"})

@@ -6,10 +6,11 @@ import Login from '@/views/login'
 import StoreList from '@/views/storelist'
 import Order from '@/views/order'
 import Cart from '@/views/cart'
+import Settlement from '@/views/settlement'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
 	routes: [
 		{
 			path: '/',
@@ -48,5 +49,28 @@ export default new Router({
 			name: 'StoreList',
 			component: StoreList
 		},
+		{
+			path: '/settlement',
+			name: 'Settlement',
+			component: Settlement
+		},
 	]
 })
+
+
+/* router.beforeEach((to, from, next) => {
+	if(sessionStorage.getItem("userName")){
+		if(to.path == "/login")
+			next("/home");
+		else
+			next();
+	}else{
+		if(to.path == "/login"){
+			next();
+		}else{
+			next("/login");
+		}
+	}
+}) */
+
+export default router

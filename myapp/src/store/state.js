@@ -1,10 +1,13 @@
-export default {
+const state = sessionStorage.getItem('state') ? JSON.parse(sessionStorage.getItem('state')) : {
 	userinfo: {
-		username: "0",
-		email: "0",
+		username: "",
+		email: "",
 		status: 0
 	},
 	store: {},
-	goods: {},
-	cart: ""
-};
+	goodsname: {},
+	storename: {},
+	cart: {}
+}
+
+export default state;

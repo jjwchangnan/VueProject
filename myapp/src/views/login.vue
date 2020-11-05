@@ -50,29 +50,42 @@ export default {
             username: "",
             password: "",
         };
-	},
+    },
     components: {
         appHeader,
     },
     methods: {
         onSubmit() {
-            this.$axios
-                .get("/static/user.json")
+            this.$axios({
+                method: "post",
+                url: "/userinfo",
+                params: {
+                    username: this.username,
+                    password: this.password,
+                },
+            })
                 .then((res) => {
-                    this.doLogin(res.data);
+                    this.doLogin(res.data.data);
                 })
                 .catch((e) => {
                     console.log("获取数据失败");
                 });
         },
+        toToast(txt) {
+            this.$toast({
+                message: txt,
+                position: "middle",
+                icon: "cross",
+                overlay: true,
+            });
+        },
         doLogin(data) {
-            for (const key in data) {
-                if ((data[key].username = this.username))
-                    if ((data[key].password = this.password)) {
-                        this.$store.commit("setUser", data[key]);
-                        this.$router.push({ path: "/" });
-                    } else alert("error");
-                else alert("error");
+            if (data == "error") {
+                this.toToast(`账号密码错误\n请检查后再试`);
+            } else {
+                //sessionStorage.setItem("userName", data[key].username);
+                this.$store.commit("setUser", data);
+                this.$router.push({ path: "/home" });
             }
         },
     },
@@ -111,5 +124,9 @@ body {
             color: #177fff;
         }
     }
+}
+
+.input-bgcolor {
+    background-color: #f6f5f5;
 }
 </style>

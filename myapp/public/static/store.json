@@ -36,7 +36,7 @@
 		"star": 4,
 		"imgsrc": ""
 	},
-	"lc1":{
+	"lc1": {
 		"storename": "茶百道",
 		"goodslist": [
 			{
@@ -73,7 +73,7 @@
 		"star": 4,
 		"imgsrc": "@/assets/img/discount1.png"
 	},
-	"xcj1":{
+	"xcj1": {
 		"storename": "乡村基",
 		"goodslist": [
 			{

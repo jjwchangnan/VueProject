@@ -114,10 +114,14 @@ export default {
     methods: {
         getJson() {
             this.$axios
-                .get("static/store.json")
+                .get("/store")
                 .then((res) => {
-					this.$store.commit("saveStoreInfo", res.data);
-					var temp = this.$store.state.store;
+					this.$store.commit("saveStoreInfo", res.data.storelist);
+					let userinfo = this.$store.getters.getUerInfo("name")
+					if(userinfo != ""){
+						this.$store.commit("initCartInfo", userinfo)
+					}
+					var temp = this.$store.getters.getStore;
 					for (const key in temp) {
 						this.$set(this.StoreList, key, temp[key]);
 					}
