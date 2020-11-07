@@ -28,7 +28,7 @@ export default {
 		height: 50px;
 		width: 100vw;
 		//border-bottom: 3px solid gray;
-		box-shadow:0px 2px 6px #585858;
+		//box-shadow:0px 2px 6px #585858;
 
 		img{
 			position: relative;

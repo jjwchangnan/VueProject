@@ -56,19 +56,19 @@ export default {
     },
     methods: {
         onSubmit() {
-            this.$axios({
+            this.$http({
                 method: "post",
-                url: "/userinfo",
-                params: {
+                url: "/login",
+                data: {
                     username: this.username,
                     password: this.password,
                 },
             })
                 .then((res) => {
-                    this.doLogin(res.data.data);
+                    this.doLogin(res.data);
                 })
                 .catch((e) => {
-                    console.log("获取数据失败");
+                    console.log(e);
                 });
         },
         toToast(txt) {
@@ -80,11 +80,11 @@ export default {
             });
         },
         doLogin(data) {
-            if (data == "error") {
+            if (!data.verifySuccess) {
                 this.toToast(`账号密码错误\n请检查后再试`);
             } else {
                 //sessionStorage.setItem("userName", data[key].username);
-                this.$store.commit("setUser", data);
+                this.$store.commit("setUser", data.userInfo);
                 this.$router.push({ path: "/home" });
             }
         },

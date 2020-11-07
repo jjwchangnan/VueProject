@@ -98,9 +98,16 @@
 import GoodsList from "@/components/goodsList";
 
 export default {
-    name: "storelist",
-    mounted: function () {
+	name: "storelist",
+    created: function () {
         this.goodsInfo();
+		this.upDataPrice();
+		
+		let obj = {
+            storeid: this.$route.query.storeid,
+            goodslist: this.shoplist,
+		};
+		this.$store.commit("initCart", obj);
     },
     data() {
         return {
@@ -122,18 +129,20 @@ export default {
         },
         goodsInfo() {
 			let storeid = this.$route.query.storeid;
-			this.storeinfo = this.$store.getters.getStoreInfo(storeid)
-			this.shoplist = this.$store.getters.getGoodsList(storeid)
+            this.storeinfo = this.$store.getters.getStoreInfo(storeid);
+			this.shoplist = this.$store.getters.getGoodsList(storeid);
         },
         upDataPrice() {
+			let storeid = this.$route.query.storeid;
 			let sum = 0;
-			let goodsInfo = this.$store.getters.getGoodsList(this.$route.query.storeid)
 			let cart = this.$store.getters.getCart;
-			cart = cart[this.$route.query.storeid]
-			for (const id in cart) {
-				sum += goodsInfo[id].price * cart[id]
+            if(cart){
+				cart = cart[storeid]
+				for (const id in cart) {
+					sum += cart[id].price * cart[id].num;
+				}
+				this.price_sum = sum.toFixed(2);
 			}
-			this.price_sum = sum.toFixed(2);
         },
     },
 };
@@ -141,8 +150,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-$redcolor: #F05454;
-$yellowcolor: #FF7F00;
+$redcolor: #f05454;
+$yellowcolor: #ff7f00;
 @mixin box_style {
     position: relative;
     width: 94%;
@@ -328,6 +337,6 @@ $yellowcolor: #FF7F00;
 }
 
 .van-popup--bottom.van-popup--round {
-	border-radius: 10px 10px 0 0;
+    border-radius: 10px 10px 0 0;
 }
 </style>

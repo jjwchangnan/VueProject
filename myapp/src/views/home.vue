@@ -113,22 +113,24 @@ export default {
     },
     methods: {
         getJson() {
-            this.$axios
-                .get("/store")
-                .then((res) => {
-					this.$store.commit("saveStoreInfo", res.data.storelist);
-					let userinfo = this.$store.getters.getUerInfo("name")
-					if(userinfo != ""){
-						this.$store.commit("initCartInfo", userinfo)
-					}
-					var temp = this.$store.getters.getStore;
-					for (const key in temp) {
-						this.$set(this.StoreList, key, temp[key]);
-					}
-                })
-                .catch((e) => {
-                    console.log("Error");
-                });
+            if (JSON.stringify(this.$store.getters.getStore) == "{}") {
+                this.$http
+                    .get("/store")
+                    .then((res) => {
+                        this.$store.commit("saveStoreInfo", res.data);
+                    })
+                    .catch((e) => {
+                        console.log(e);
+                    });
+            }
+            let userinfo = this.$store.getters.getUerInfo("name");
+            if (userinfo != "" && userinfo != undefined) {
+                this.$store.commit("initCartInfo", userinfo);
+            }
+            var temp = this.$store.getters.getStore;
+            for (const key in temp) {
+                this.$set(this.StoreList, key, temp[key]);
+            }
         },
     },
 };

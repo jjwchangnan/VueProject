@@ -57,29 +57,26 @@
             </div>
         </div>
 
-        <div
-            class="settlement_box goods_box"
-            v-for="(item, index) in settlementList"
-            :key="index"
-        >
+        <div class="settlement_box goods_box">
             <div class="goods_box_head">
-                {{ $store.state.storename[index] }}
+                {{ storeData[storeid].storename }}
             </div>
             <hr />
             <div class="goods_box_list">
                 <van-card
-                    v-for="(goods, id) in item"
+                    v-for="(data, id) in cartData[storeid]"
                     :key="id"
-                    :num="goods.num"
-                    :price="goods.price"
+                    :num="data.num"
+                    :price="data.price"
                     desc="描述信息"
-                    :title="$store.state.goodsname[id]"
+                    :title="data.name"
+                    v-show="data.num > 0 ? true : false"
                     thumb="https://img.yzcdn.cn/vant/ipad.jpeg"
                 />
             </div>
             <hr />
             <div>
-                <van-cell value="-￥4.5" title="配送费" value-class="redtext" />
+                <van-cell value="￥4.5" title="配送费" value-class="redtext" />
             </div>
             <hr />
             <div>
@@ -91,22 +88,13 @@
             </div>
             <hr />
             <div>
-                <van-cell
-                    is-link
-                    value="-￥4.5"
-                    title="使用红包"
-                    @click="show = true"
-                    value-class="redtext"
-                />
-                <van-action-sheet v-model="show" title="标题">
-                    <div class="content">内容</div>
-                </van-action-sheet>
+                <coupon @getDiscount="changeDiscount" :price="upDataPrice()"></coupon>
             </div>
         </div>
 
         <van-submit-bar
             button-color="#FF7F00"
-            :price="3050"
+            :price="TotalPrice"
             text-align="left"
             button-text="提交订单"
         />
@@ -114,18 +102,25 @@
 </template>
 
 <script>
+import coupon from "@/components/coupon"
 export default {
     name: "settlement",
-    mounted() {
+    created() {
         this.storeid = this.$route.query.storeid;
-        this.getCard(this.storeid);
-    },
+		this.goodsData = this.$store.getters.getGoodsList(this.storeid);
+	},
+	components: {
+		coupon
+	},
     data() {
         return {
             show: false,
             isShowAddress: false,
             storeid: "",
-            settlementList: {},
+            cartData: this.$store.getters.getCart,
+            storeData: this.$store.getters.getStore,
+			goodsData: "",
+			discount: 0,
 
             chosenAddressId: "1",
             list: [
@@ -153,28 +148,41 @@ export default {
                 },
             ],
         };
-    },
+	},
+	computed: {
+		TotalPrice() {
+			let price = this.upDataPrice()
+			return (price-this.discount)*100
+		}
+	},
     methods: {
-        getCard(id) {
-            let cart = this.$store.state.cart;
-            for (let i in cart) {
-                this.$set(this.settlementList, i, cart[i]);
-            }
-        },
         onAdd() {
             Toast("新增地址");
         },
         onEdit(item, index) {
             Toast("编辑地址:" + index);
-        },
+		},
+		upDataPrice() {
+			let storeid = this.storeid;
+			let sum = 0;
+			let cart = this.$store.getters.getCart;
+            if(cart){
+				cart = cart[storeid]
+				for (const id in cart) {
+					sum += cart[id].price * cart[id].num;
+				}
+				return sum.toFixed(2)
+			}
+		},
+		changeDiscount(data) {
+			this.discount = data
+		}
     },
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-$redcolor: #f05454;
-$yellowcolor: #ff7f00;
 .settlement {
     background-color: #f5f5f5;
     min-height: 100vh;
@@ -249,13 +257,5 @@ hr {
         background-color: #fff;
         padding: 10px 16px;
     }
-}
-
-.redtext {
-    color: $redcolor;
-}
-
-.yellowtext {
-    color: $yellowcolor;
 }
 </style>

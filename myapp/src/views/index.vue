@@ -16,9 +16,9 @@
                         </div>
                         <div class="userbox_text">
                             <p>
-                                {{ user.username == "" ? "-" : user.username }}
+                                {{ user.username == "tourist" ? "游客" : user.username }}
                             </p>
-                            <p>{{ user.email }}</p>
+                            <p>{{ user.username == "tourist" ? "点击此处登录" : user.email }}</p>
                         </div>
                     </div>
                     <i @click="isShowLeftNav = !isShowLeftNav"
@@ -32,6 +32,7 @@
                             v-for="item in left_nav_list"
                             :key="item.text"
                             class="menu_btn_hover"
+							@click="left_nav_event(item.id)"
                         >
                             <i
                                 ><van-icon
@@ -64,20 +65,22 @@
                 </div>
             </div>
         </transition>
+		<coupon ref="coupon" :showLine="false"></coupon>
     </div>
 </template>
 
 <script>
 import appHeader from "@/components/header";
 import appFooter from "@/components/footer";
-import { mapState, mapGetters, mapMutations, mapActions } from "vuex";
+import coupon from "@/components/coupon"
 
 export default {
     name: "index",
     components: {
         appHeader,
-        appFooter,
-    },
+		appFooter,
+		coupon
+	},
     data() {
         return {
 			user: this.$store.getters.getUerInfo(),
@@ -85,26 +88,31 @@ export default {
             isShowLeftNav: false,
             left_nav_list: [
                 {
+					id: "user",
                     icon: "user-o",
                     text: "个人中心",
                     url: "",
                 },
                 {
+					id: "addr",
                     icon: "wap-home-o",
                     text: "我的地址",
                     url: "",
                 },
                 {
+					id: "collection",
                     icon: "star-o",
                     text: "我的收藏",
                     url: "",
                 },
                 {
+					id: "order",
                     icon: "cash-back-record",
                     text: "账单流水",
                     url: "",
                 },
                 {
+					id: "discount",
                     icon: "discount",
                     text: "优惠券",
                     url: "",
@@ -112,21 +120,15 @@ export default {
             ],
         };
     },
-    watch: {
-        user: function () {
-            if (this.user.status == 0) {
-                this.user.username = "游客";
-				this.user.email = "请登录账号";
-				this.isLogin = false
-            }else {
-				this.isLogin = true
-			}
-        },
-    },
     methods: {
 		toLogin() {
 			if(!this.isLogin)
 				this.$router.push({"path": "/login"})
+		},
+		left_nav_event(type) {
+			if(type == "discount"){
+				this.$refs.coupon.showBox()
+			}
 		}
     },
 };
@@ -141,7 +143,7 @@ export default {
     height: 100vh;
     background: #fff;
     box-shadow: 2px 0px 100px #000000;
-    z-index: 10001;
+    z-index: 2000;
 
     .left_nav_head {
         position: relative;

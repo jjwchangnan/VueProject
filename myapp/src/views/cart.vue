@@ -1,6 +1,11 @@
 <template>
     <div class="cart">
-        <div class="cart_child" v-for="(item, index) in cartData" :key="index" v-show="item.sumPrice == 0 ? false : true">
+        <div
+            class="cart_child"
+            v-for="(item, index) in cartData"
+            :key="index"
+            v-show="sumPrice(index) == 0 ? false : true"
+        >
             <div class="cart_child_head">
                 <div class="checked_box">
                     <van-checkbox
@@ -9,32 +14,37 @@
                         v-model="checked"
                     ></van-checkbox>
                 </div>
-                <span @click="$router.push({path: '/storelist',query: { storeid: index }})">{{ $store.state.store[index].storename }}</span>
+                <span
+                    @click="
+                        $router.push({
+                            path: '/storelist',
+                            query: { storeid: index },
+                        })
+                    "
+                    >{{ storeData[index].storename }}</span
+                >
                 <i><van-icon name="arrow" size="15" /></i>
             </div>
             <div
                 class="cart_child_content"
                 v-for="(data, key) in item"
                 :key="key"
+                v-show="data == 0 ? false : true"
             >
                 <van-swipe-cell :right-width="70">
                     <van-card
-                        :num="data.number"
+                        :num="data.num"
                         :price="data.price"
                         desc="描述信息"
-                        :title="$store.state.goodsname[data.goodsname]"
+                        :title="data.name"
                         thumb="https://img.yzcdn.cn/vant/ipad.jpeg"
-						@click="
-							$router.push({
-								path: '/storelist',
-								query: { storeid: index },
-							})
-						"
+                        @click="
+                            $router.push({
+                                path: '/storelist',
+                                query: { storeid: index },
+                            })
+                        "
                     >
-                        <!-- <template #tags>
-                            <van-tag plain type="danger">标签</van-tag>
-                            <van-tag plain type="danger">标签</van-tag>
-                        </template> -->
                     </van-card>
                     <template #right>
                         <van-button
@@ -42,14 +52,22 @@
                             text="删除"
                             type="danger"
                             class="delete-button"
-							@click="deleteCart(index, data.goodsname)"
+                            @click="deleteCart(index, data.goodsname)"
                         />
                     </template>
                 </van-swipe-cell>
             </div>
             <div class="cart_child_foot">
-                <div class="btn_group" @click="$router.push({path: '/settlement',query: { storeid: [index] }})">
-                    <div>${{ item.sumPrice }}</div>
+                <div
+                    class="btn_group"
+                    @click="
+                        $router.push({
+                            path: '/settlement',
+                            query: { storeid: [index] },
+                        })
+                    "
+                >
+                    <div>${{ sumPrice(index) }}</div>
                     <div>去结算</div>
                 </div>
             </div>
@@ -60,63 +78,22 @@
 <script>
 export default {
     name: "cart",
-    created: function () {
-        this.getCart();
-		this.configStoreInfo();
-    },
     data() {
         return {
             checked: true,
-            cartData: {},
+            cartData: this.$store.getters.getCart,
+            storeData: this.$store.getters.getStore,
         };
     },
-    computed: {
-        sumPrice() {
-            for (const i in this.cartData) {
-            }
-        },
-    },
     methods: {
-        configStoreInfo() {
-            let storeInfo = this.$store.state.store;
-            let goods_obj = {};
-            for (let x in storeInfo) {
-                for (let y in storeInfo[x].goodslist) {
-                    let temp = storeInfo[x].goodslist[y];
-                    goods_obj[temp.goodsid] = temp.goodsname;
-                }
-			}
-			
-			let store_obj = {};
-			for (let x in storeInfo) {
-                let temp = storeInfo[x];
-				store_obj[x] = temp.storename;
-			}
-
-			this.$store.commit("saveGoodsInfo", [store_obj, goods_obj]);
-        },
-        getCart() {
-            let cartInfo = this.$store.state.cart;
-            let storeInfo = this.$store.state.store;
-            for (const x in cartInfo) {
-                this.$set(this.cartData, x, []);
-                let sumPrice = 0;
-                for (const y in cartInfo[x]) {
-                    if (cartInfo[x][y].num > 0) {
-                        let _obj = {};
-                        _obj.goodsname = y;
-                        _obj.price = cartInfo[x][y].price;
-                        _obj.number = cartInfo[x][y].num;
-                        sumPrice += _obj.price * _obj.number;
-                        this.$set(
-                            this.cartData[x],
-                            this.cartData[x].length,
-                            _obj
-                        );
-                    }
-                }
-                this.$set(this.cartData[x], "sumPrice", sumPrice.toFixed(2));
+        sumPrice(storeid) {
+            let sum = 0;
+            let obj = this.cartData[storeid];
+            for (const i in obj) {
+                sum += obj[i].price * obj[i].num;
             }
+
+            return sum.toFixed(2);
         },
         deleteCart(st, gds) {
             let arr = [st, gds];
@@ -129,8 +106,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-$redcolor: #F05454;
-$yellowcolor: #FF7F00;
+$redcolor: #f05454;
+$yellowcolor: #ff7f00;
 .cart {
     background-color: #eaeaea;
     min-height: 100vh;
@@ -168,7 +145,7 @@ $yellowcolor: #FF7F00;
         }
 
         .cart_child_content {
-            padding: 10px 0;
+            padding: 0;
             box-sizing: border-box;
             background-color: #fff;
         }

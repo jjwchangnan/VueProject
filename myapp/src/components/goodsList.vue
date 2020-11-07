@@ -20,31 +20,23 @@
                 <p>月售{{ item.salescount }}</p>
                 <p><span>￥</span>{{ item.price }}</p>
                 <div>
-                    <div class="minus-btn">
-						<van-icon
-							name="minus"
-							size="8"
-							color="#fff"
-							@click="delCart(item.goodsid)"
-							v-show="
-								isNaN(goods[storeid][item.goodsid]) &&
-								goods[storeid][item.goodsid] > 0
-									? false
-									: true
-							"
-						/>
-					</div>
-                    <span>{{
-                        isNaN(goods[storeid][item.goodsid]) ? 0 : goods[storeid][item.goodsid]
-                    }}</span>
-					<div class="plus-btn">
-						<van-icon
-							name="plus"
-							size="10"
-							color="#fff"
-							@click="addCart(item.goodsid)"
-						/>
-					</div>
+                    <div class="minus-btn" v-show="goods[item.goodsid].num == 0 ? false : true">
+                        <van-icon
+                            name="minus"
+                            size="8"
+                            color="#fff"
+                            @click="delCart(item.goodsid)"
+                        />
+                    </div>
+                    <span>{{ goods[item.goodsid].num }}</span>
+                    <div class="plus-btn">
+                        <van-icon
+                            name="plus"
+                            size="10"
+                            color="#fff"
+                            @click="addCart(item.goodsid)"
+                        />
+                    </div>
                 </div>
             </div>
         </div>
@@ -57,33 +49,32 @@ import { mapState } from "vuex";
 export default {
     name: "GoodsList",
     props: ["goodslist", "storeid"],
-    methods: function () {},
     data() {
         return {
-            goods: this.$store.getters.getCart,
+            goods: this.$store.getters.getCart[this.storeid],
         };
-	},
+    },
     methods: {
         addCart(id) {
-			let obj = {
-				handler: "add",
-				storeid: this.storeid,
-				goodsid: id
-			}
-			this.$store.commit("setCart", obj);
-			this.upData();
+            let obj = {
+                handler: "add",
+                storeid: this.storeid,
+                goodsid: id,
+            };
+            this.$store.commit("setCart", obj);
+            this.upData();
         },
         delCart(id) {
-			let obj = {
-				handler: "del",
-				storeid: this.storeid,
-				goodsid: id
-			}
-			this.$store.commit("setCart", obj);
+            let obj = {
+                handler: "del",
+                storeid: this.storeid,
+                goodsid: id,
+            };
+            this.$store.commit("setCart", obj);
             this.upData();
         },
         upData() {
-			this.$emit('upDataCart')
+            this.$emit("upDataCart");
         },
     },
 };
@@ -91,8 +82,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-$redcolor: #F05454;
-$yellowcolor: #FF7F00;
+$redcolor: #f05454;
+$yellowcolor: #ff7f00;
 .st_list_son {
     width: 100%;
     height: 90px;
@@ -146,39 +137,39 @@ $yellowcolor: #FF7F00;
             right: 10px;
             bottom: 0px;
 
-			> .minus-btn {
-				display: inline-block;
-				width: 20px;
-				height: 20px;
-				border-radius: 5px;
-				background: #a3a3a3;
-				text-align: center;
+            > .minus-btn {
+                display: inline-block;
+                width: 20px;
+                height: 20px;
+                border-radius: 5px;
+                background: #a3a3a3;
+                text-align: center;
 
-				i{
-					display: inline-block;
-					position: relative;
-					width: 100%;
-					height: 100%;
-					line-height: 20px;
-				}
-			}
+                i {
+                    display: inline-block;
+                    position: relative;
+                    width: 100%;
+                    height: 100%;
+                    line-height: 20px;
+                }
+            }
 
-			> .plus-btn {
-				display: inline-block;
-				width: 20px;
-				height: 20px;
-				border-radius: 5px;
-				background: #ff9642;
-				text-align: center;
-				
-				i{
-					display: inline-block;
-					position: relative;
-					width: 100%;
-					height: 100%;
-					line-height: 20px;
-				}
-			}
+            > .plus-btn {
+                display: inline-block;
+                width: 20px;
+                height: 20px;
+                border-radius: 5px;
+                background: #ff9642;
+                text-align: center;
+
+                i {
+                    display: inline-block;
+                    position: relative;
+                    width: 100%;
+                    height: 100%;
+                    line-height: 20px;
+                }
+            }
 
             span {
                 margin: 0 10px;

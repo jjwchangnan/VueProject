@@ -6,7 +6,7 @@ import router from './router'
 import Vant from 'vant'
 import MyCarousel from 'my_carousel_jjw'
 import store from './store/index.js'
-import axios from './axios/axios'
+import http from './axios/axios'
 
 //css
 import 'vant/lib/index.css';
@@ -17,7 +17,7 @@ import '@/assets/size.js';
 Vue.use(MyCarousel);
 Vue.use(Vant);
 Vue.config.productionTip = false
-Vue.prototype.$axios = axios
+Vue.prototype.$http = http
 
 /* eslint-disable no-new */
 new Vue({
